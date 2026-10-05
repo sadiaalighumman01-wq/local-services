@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceHub — Find Trusted Local Professionals Near You</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+
+  <!-- Top Demo Bar -->
+  <div class="bg-slate-950 text-slate-300 text-xs py-2 px-4 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1 text-emerald-400 font-semibold">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          100% Verified Local Professionals in Pakistan
+        </span>
+        <span class="text-slate-600 hidden sm:inline">|</span>
+        <span class="text-slate-400 hidden sm:inline">Lahore, Karachi, Islamabad & 10+ Cities</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">Next.js Dev Server:</span>
+        <a href="http://localhost:3000" target="_blank" class="text-sky-400 hover:underline font-semibold flex items-center gap-1">
+          <span>Open localhost:3000</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="javascript:void(0)" onclick="switchTab('home')" class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="text-2xl font-black tracking-tight text-slate-900">
+              Service<span class="text-sky-600">Hub</span>
+            </span>
+            <span class="text-[10px] block text-slate-400 font-medium -mt-1">
+              Trusted Local Services
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1">
+          <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-bold text-sky-600 bg-sky-50 transition-all">Home</button>
+          <button onclick="switchTab('services')" id="nav-services" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">Services</button>
+          <button onclick="switchTab('professionals')" id="nav-professionals" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">Find Professionals</button>
+          <button onclick="switchTab('how-it-works')" id="nav-how" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">How It Works</button>
+          <button onclick="switchTab('about')" id="nav-about" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">About</button>
+          <button onclick="switchTab('contact')" id="nav-contact" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">Contact</button>
+        </nav>
+
+        <!-- Right Action Items -->
+        <div class="flex items-center gap-3">
+          <!-- Favorites Button -->
+          <button onclick="switchTab('customer-dash')" class="relative p-2.5 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Saved Favorites">
+            <i data-lucide="heart" class="w-5 h-5 text-rose-500 fill-rose-100"></i>
+            <span id="fav-badge" class="absolute top-1.5 right-1.5 w-4 h-4 bg-rose-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center">3</span>
+          </button>
+
+          <!-- Customer Dashboard Shortcut -->
+          <button onclick="switchTab('customer-dash')" class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 border border-slate-200 transition-all">
+            <i data-lucide="user" class="w-4 h-4 text-sky-600"></i>
+            <span>Customer</span>
+          </button>
+
+          <!-- Provider Dashboard Shortcut -->
+          <button onclick="switchTab('provider-dash')" class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all">
+            <i data-lucide="briefcase" class="w-4 h-4 text-emerald-600"></i>
+            <span>Provider Portal</span>
+          </button>
+
+          <!-- Become Provider CTA -->
+          <button onclick="switchTab('become-provider')" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-700 hover:to-emerald-700 shadow-md shadow-sky-600/20 transition-all flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Become a Provider</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TAB CONTAINERS -->
+  <main class="flex-1">
+
+    <!-- TAB 1: HOME PAGE -->
+    <div id="tab-home" class="tab-content active">
+      <!-- Hero Section -->
+      <section class="relative overflow-hidden bg-gradient-to-b from-sky-50 via-white to-slate-50 pt-16 pb-20 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-semibold">
+                <i data-lucide="sparkles" class="w-4 h-4 text-sky-600"></i>
+                <span>Pakistan’s #1 Local Services Marketplace</span>
+              </div>
+
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight">
+                Find Trusted <br class="hidden sm:block" />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-emerald-600">
+                  Professionals
+                </span> Near You
+              </h1>
+
+              <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Book reliable local experts for your everyday services — quickly, easily and securely. Verified plumbers, electricians, AC technicians and tutors at transparent PKR prices.
+              </p>
+
+              <!-- Search Bar -->
+              <div class="bg-white p-3.5 rounded-3xl shadow-xl border border-slate-200 max-w-2xl mx-auto lg:mx-0">
+                <div class="flex flex-col sm:flex-row gap-2.5">
+                  <div class="flex-1 relative flex items-center">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5"></i>
+                    <input type="text" id="hero-search" placeholder="Plumber, electrician, designer..." class="w-full pl-10 pr-3 py-3 rounded-2xl bg-slate-50 text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 border border-transparent">
+                  </div>
+                  <div class="sm:w-44 relative flex items-center">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+                    <select id="hero-city" class="w-full pl-10 pr-6 py-3 rounded-2xl bg-slate-50 text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 border border-transparent cursor-pointer">
+                      <option value="">All Cities</option>
+                      <option value="Lahore">Lahore</option>
+                      <option value="Islamabad">Islamabad</option>
+                      <option value="Karachi">Karachi</option>
+                      <option value="Rawalpindi">Rawalpindi</option>
+                      <option value="Faisalabad">Faisalabad</option>
+                      <option value="Multan">Multan</option>
+                    </select>
+                  </div>
+                  <button onclick="handleHeroSearch()" class="px-6 py-3 rounded-2xl text-xs font-bold text-white bg-sky-600 hover:bg-sky-700 shadow-md transition-all flex items-center justify-center gap-1.5">
+                    <span>Search</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                  </button>
+                </div>
+
+                <!-- Popular Pills -->
+                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 flex-wrap text-xs text-slate-500">
+                  <span class="font-medium text-slate-400">Popular:</span>
+                  <button onclick="filterByService('Plumbing')" class="px-2.5 py-1 bg-slate-100 hover:bg-sky-50 hover:text-sky-600 rounded-lg text-[11px] font-semibold transition-colors">Plumber</button>
+                  <button onclick="filterByService('Electrical')" class="px-2.5 py-1 bg-slate-100 hover:bg-sky-50 hover:text-sky-600 rounded-lg text-[11px] font-semibold transition-colors">Electrician</button>
+                  <button onclick="filterByService('AC Repair')" class="px-2.5 py-1 bg-slate-100 hover:bg-sky-50 hover:text-sky-600 rounded-lg text-[11px] font-semibold transition-colors">AC Repair</button>
+                  <button onclick="filterByService('Cleaning')" class="px-2.5 py-1 bg-slate-100 hover:bg-sky-50 hover:text-sky-600 rounded-lg text-[11px] font-semibold transition-colors">Deep Cleaning</button>
+                  <button onclick="filterByService('Graphic Design')" class="px-2.5 py-1 bg-slate-100 hover:bg-sky-50 hover:text-sky-600 rounded-lg text-[11px] font-semibold transition-colors">Designer</button>
+                </div>
+              </div>
+
+              <!-- Trust Stats -->
+              <div class="pt-2 flex items-center gap-8 justify-center lg:justify-start">
+                <div class="flex items-center gap-2 text-left">
+                  <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-900">100% Verified</div>
+                    <div class="text-[11px] text-slate-500">ID & Skill Checked</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 text-left">
+                  <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                    <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-900">4.9 / 5 Rating</div>
+                    <div class="text-[11px] text-slate-500">25,000+ Reviews</div>
+                  </div>
+                </div>
+
+                <div class="hidden sm:flex items-center gap-2 text-left">
+                  <div class="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-900">10,000+ Pros</div>
+                    <div class="text-[11px] text-slate-500">Across 9 Cities</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Hero Photo -->
+            <div class="lg:col-span-5 relative">
+              <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/5">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80" alt="ServiceHub Pro" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                <div class="absolute bottom-5 left-5 right-5 text-white">
+                  <span class="inline-block px-2.5 py-0.5 rounded bg-emerald-500 text-[10px] font-bold uppercase mb-1">Featured Pro</span>
+                  <h3 class="text-lg font-bold">Ali Raza — Licensed Electrician</h3>
+                  <p class="text-xs text-slate-200">Islamabad • 4.8 ★ (118 reviews) • From PKR 1,500</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Popular Services Section -->
+      <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <span class="text-xs font-bold text-sky-600 uppercase tracking-wider bg-sky-50 px-3 py-1 rounded-full">Top Categories</span>
+              <h2 class="text-3xl font-black text-slate-900 mt-2">Popular Services</h2>
+              <p className="text-xs text-slate-500">Discover vetted specialists across the most requested everyday tasks.</p>
+            </div>
+            <button onclick="switchTab('services')" class="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1">
+              <span>View All 12 Categories</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <div id="popular-services-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+      </section>
+
+      <!-- Featured Professionals Section -->
+      <section class="py-20 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full">Top Rated</span>
+              <h2 class="text-3xl font-black text-slate-900 mt-2">Featured Professionals</h2>
+              <p class="text-xs text-slate-500">Background checked, skill verified, and trusted by thousands of homeowners.</p>
+            </div>
+            <button onclick="switchTab('professionals')" class="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1">
+              <span>Explore All Experts</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <div id="featured-pros-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section id="how-it-works-section" class="py-20 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center max-w-2xl mx-auto mb-16 space-y-2">
+            <span class="text-xs font-bold text-sky-600 uppercase tracking-wider bg-sky-50 px-3 py-1 rounded-full">3 Simple Steps</span>
+            <h2 class="text-3xl font-black text-slate-900">How ServiceHub Works</h2>
+            <p class="text-xs text-slate-500">Booking reliable home services in Pakistan has never been this seamless.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
+              <span class="text-[11px] font-extrabold text-slate-400 bg-white px-2.5 py-0.5 rounded-full border">STEP 01</span>
+              <div class="w-14 h-14 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center mx-auto">
+                <i data-lucide="search" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-bold text-base text-slate-900">1. Search</h3>
+              <p class="text-xs text-slate-500">Find the service you need by searching category, task, or your neighborhood.</p>
+            </div>
+
+            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
+              <span class="text-[11px] font-extrabold text-slate-400 bg-white px-2.5 py-0.5 rounded-full border">STEP 02</span>
+              <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                <i data-lucide="sliders-horizontal" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-bold text-base text-slate-900">2. Choose a Professional</h3>
+              <p class="text-xs text-slate-500">Compare verified profiles, authentic customer reviews, and upfront PKR rates.</p>
+            </div>
+
+            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
+              <span class="text-[11px] font-extrabold text-slate-400 bg-white px-2.5 py-0.5 rounded-full border">STEP 03</span>
+              <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto">
+                <i data-lucide="calendar-check-2" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-bold text-base text-slate-900">3. Book</h3>
+              <p class="text-xs text-slate-500">Select your preferred date and time. Pay securely in cash directly after completion.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Choose Us -->
+      <section class="py-20 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center max-w-2xl mx-auto mb-16 space-y-2">
+            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full">Guaranteed Standards</span>
+            <h2 class="text-3xl font-black text-slate-900">Why Choose ServiceHub</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold mb-3">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900">Verified Professionals</h4>
+              <p class="text-xs text-slate-500">Every expert undergoes CNIC background screening and professional skills verification.</p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold mb-3">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900">Easy Booking</h4>
+              <p class="text-xs text-slate-500">Book qualified service providers in under 2 minutes with zero online payment upfront.</p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold mb-3">
+                <i data-lucide="receipt" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900">Transparent Pricing</h4>
+              <p class="text-xs text-slate-500">Clear itemized rates in PKR so you know exactly what you will pay before booking.</p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold mb-3">
+                <i data-lucide="star" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900">Customer Reviews</h4>
+              <p class="text-xs text-slate-500">Authentic feedback from verified homeowners and families across Pakistan.</p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold mb-3">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900">Local Professionals</h4>
+              <p class="text-xs text-slate-500">Experts based in your city and sector for fast arrival and neighborhood accountability.</p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold mb-3">
+                <i data-lucide="headphones" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900">Responsive Support</h4>
+              <p class="text-xs text-slate-500">Dedicated local customer helpline available 7 days a week for any assistance.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="py-20 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center max-w-2xl mx-auto mb-16 space-y-2">
+            <span class="text-xs font-bold text-amber-600 uppercase tracking-wider bg-amber-50 px-3 py-1 rounded-full">Client Experiences</span>
+            <h2 class="text-3xl font-black text-slate-900">Trusted by Thousands</h2>
+          </div>
+
+          <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="py-20 bg-slate-900 text-white text-center">
+        <div class="max-w-3xl mx-auto px-4 space-y-6">
+          <h2 class="text-3xl sm:text-4xl font-black tracking-tight">Need a professional for your next job?</h2>
+          <p class="text-slate-300 text-sm">Join Pakistan's premier local marketplace today.</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4 pt-2">
+            <button onclick="switchTab('professionals')" class="px-8 py-3.5 bg-white text-slate-900 rounded-2xl font-bold text-xs hover:bg-slate-100 transition-all">Find a Professional</button>
+            <button onclick="switchTab('become-provider')" class="px-8 py-3.5 bg-sky-600 text-white rounded-2xl font-bold text-xs hover:bg-sky-500 transition-all">Become a Service Provider</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 2: SERVICES MARKETPLACE -->
+    <div id="tab-services" class="tab-content py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h1 class="text-3xl sm:text-4xl font-black text-slate-900">Explore Our Services</h1>
+          <p class="text-xs text-slate-500">Discover all 12 verified service categories with transparent starting PKR rates.</p>
+        </div>
+
+        <div id="all-services-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: FIND PROFESSIONALS -->
+    <div id="tab-professionals" class="tab-content py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <h1 class="text-3xl font-black text-slate-900">Find Professionals</h1>
+            <p class="text-xs text-slate-500">Filter vetted service experts across Pakistan.</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <select id="filter-pro-city" onchange="renderProsDirectory()" class="px-3 py-2 bg-white rounded-xl border border-slate-200 text-xs font-semibold">
+              <option value="">All Cities</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Islamabad">Islamabad</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Rawalpindi">Rawalpindi</option>
+              <option value="Faisalabad">Faisalabad</option>
+            </select>
+
+            <select id="filter-pro-cat" onchange="renderProsDirectory()" class="px-3 py-2 bg-white rounded-xl border border-slate-200 text-xs font-semibold">
+              <option value="">All Categories</option>
+              <option value="Plumbing">Plumbing</option>
+              <option value="Electrical">Electrical</option>
+              <option value="AC Repair">AC Repair</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Tutoring">Tutoring</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="directory-pros-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CUSTOMER DASHBOARD -->
+    <div id="tab-customer-dash" class="tab-content py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="Zubair" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-sky-100">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl font-black text-slate-900">Zubair Tariq</h2>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-700 border">Customer</span>
+              </div>
+              <p class="text-xs text-slate-500">Lahore, Pakistan • zubair.tariq@gmail.com</p>
+            </div>
+          </div>
+          <button onclick="switchTab('professionals')" class="px-4 py-2 bg-sky-600 text-white rounded-xl text-xs font-bold shadow-xs">Book Service</button>
+        </div>
+
+        <!-- 4 Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Upcoming</span>
+            <div id="cust-upcoming-count" class="text-2xl font-black text-slate-900">2</div>
+            <span class="text-[11px] text-emerald-600 font-semibold">Active Jobs</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Completed</span>
+            <div class="text-2xl font-black text-slate-900">3</div>
+            <span class="text-[11px] text-sky-600 font-semibold">Done & Paid</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Saved Pros</span>
+            <div id="cust-saved-count" class="text-2xl font-black text-slate-900">3</div>
+            <span class="text-[11px] text-rose-600 font-semibold">Favorites</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Total Orders</span>
+            <div class="text-2xl font-black text-slate-900">5</div>
+            <span class="text-[11px] text-slate-500 font-semibold">All Time</span>
+          </div>
+        </div>
+
+        <!-- My Bookings List -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4">
+          <h3 class="text-base font-bold text-slate-900">My Appointments</h3>
+          <div id="customer-bookings-list" class="divide-y divide-slate-100"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PROVIDER DASHBOARD -->
+    <div id="tab-provider-dash" class="tab-content py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Ahmed Khan" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-100">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl font-black text-slate-900">Ahmed Khan</h2>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border">Verified Pro</span>
+              </div>
+              <p class="text-xs text-slate-500">Master Plumber & Sanitary Expert • Lahore</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-xl">Provider Portal</span>
+        </div>
+
+        <!-- Provider Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Total Bookings</span>
+            <div class="text-2xl font-black text-slate-900">384</div>
+            <span class="text-[11px] text-slate-500 font-semibold">Lifetime</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Pending Requests</span>
+            <div id="prov-pending-count" class="text-2xl font-black text-amber-600">2</div>
+            <span class="text-[11px] text-amber-600 font-semibold">Action Needed</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Completed Jobs</span>
+            <div class="text-2xl font-black text-emerald-600">380</div>
+            <span class="text-[11px] text-emerald-600 font-semibold">100% Satisfied</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-[11px] text-slate-400 uppercase font-bold">Average Rating</span>
+            <div class="text-2xl font-black text-slate-900">4.9 ★</div>
+            <span class="text-[11px] text-slate-500 font-semibold">142 Reviews</span>
+          </div>
+        </div>
+
+        <!-- Pending Requests with Accept / Decline -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b">
+            <h3 class="text-base font-bold text-slate-900">Customer Booking Requests</h3>
+            <span class="text-xs text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-bold">Accept or Decline</span>
+          </div>
+          <div id="provider-requests-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: BECOME A PROVIDER -->
+    <div id="tab-become-provider" class="tab-content py-12">
+      <div class="max-w-3xl mx-auto px-4 space-y-6">
+        <div class="text-center space-y-2">
+          <h1 class="text-3xl font-black text-slate-900">Grow Your Business With ServiceHub</h1>
+          <p class="text-xs text-slate-500">Join over 10,000 verified specialists across Pakistan.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+          <form onsubmit="handleProviderSignup(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-semibold mb-1 text-slate-700">Full Name</label>
+                <input type="text" required placeholder="e.g. Tariq Mehmood" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+              </div>
+              <div>
+                <label class="block font-semibold mb-1 text-slate-700">WhatsApp / Phone</label>
+                <input type="tel" required placeholder="+92 300 1234567" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-semibold mb-1 text-slate-700">Profession</label>
+                <input type="text" required placeholder="Master Plumber" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+              </div>
+              <div>
+                <label class="block font-semibold mb-1 text-slate-700">City</label>
+                <select class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+                  <option>Lahore</option>
+                  <option>Islamabad</option>
+                  <option>Karachi</option>
+                  <option>Rawalpindi</option>
+                  <option>Faisalabad</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold mb-1 text-slate-700">Starting Price (PKR)</label>
+              <input type="number" required placeholder="2000" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+            </div>
+
+            <div>
+              <label class="block font-semibold mb-1 text-slate-700">Professional Bio</label>
+              <textarea rows="3" required placeholder="Describe your experience, tools and services..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-md">Create Provider Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: ABOUT -->
+    <div id="tab-about" class="tab-content py-12">
+      <div class="max-w-4xl mx-auto px-4 space-y-8 text-center">
+        <h1 class="text-4xl font-black text-slate-900">About ServiceHub</h1>
+        <p class="text-sm text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          ServiceHub is Pakistan’s leading local service marketplace connecting homeowners and businesses with verified electricians, plumbers, AC technicians, and software developers.
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200">
+            <div class="text-3xl font-black text-slate-900">10,000+</div>
+            <div class="text-xs font-bold text-sky-600">Professionals</div>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-200">
+            <div class="text-3xl font-black text-slate-900">25,000+</div>
+            <div class="text-xs font-bold text-sky-600">Customers</div>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-200">
+            <div class="text-3xl font-black text-slate-900">50+</div>
+            <div class="text-xs font-bold text-sky-600">Services</div>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-200">
+            <div class="text-3xl font-black text-slate-900">100+</div>
+            <div class="text-xs font-bold text-sky-600">Cities</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 8: CONTACT -->
+    <div id="tab-contact" class="tab-content py-12">
+      <div class="max-w-3xl mx-auto px-4 space-y-6">
+        <div class="text-center space-y-2">
+          <h1 class="text-3xl font-black text-slate-900">Contact Support</h1>
+          <p class="text-xs text-slate-500">Helpline: (042) 111-737-842 | support@servicehub.com.pk</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl border border-slate-200">
+          <form onsubmit="handleContact(event)" class="space-y-4 text-xs">
+            <div>
+              <label class="block font-semibold mb-1">Your Name</label>
+              <input type="text" required placeholder="Your full name" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Email</label>
+              <input type="email" required placeholder="your@email.com" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Message</label>
+              <textarea rows="3" required placeholder="Describe your query..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl"></textarea>
+            </div>
+            <button type="submit" class="w-full py-3 bg-sky-600 text-white rounded-xl font-bold shadow-md">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Booking Modal -->
+  <div id="booking-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b">
+        <h3 class="font-bold text-base text-slate-900">Book Service Appointment</h3>
+        <button onclick="closeBookingModal()" class="text-slate-400 hover:text-slate-700">✕</button>
+      </div>
+
+      <div class="p-3 bg-slate-50 rounded-2xl flex items-center gap-3">
+        <img id="modal-prov-avatar" src="" class="w-12 h-12 rounded-xl object-cover">
+        <div>
+          <h4 id="modal-prov-name" class="font-bold text-xs text-slate-900"></h4>
+          <p id="modal-prov-prof" class="text-[11px] text-slate-500"></p>
+        </div>
+      </div>
+
+      <form onsubmit="submitBooking(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Select Service</label>
+          <select id="modal-service-select" class="w-full px-3 py-2 bg-slate-50 border rounded-xl"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Date</label>
+            <input type="date" required value="2026-10-05" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Time</label>
+            <select class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+              <option>10:00 AM</option>
+              <option>12:00 PM</option>
+              <option>02:00 PM</option>
+              <option>04:00 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Your Address</label>
+          <input type="text" required placeholder="House #, Street, Sector / Area" value="House 42, DHA Phase 5, Lahore" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+        </div>
+
+        <div class="p-3 bg-sky-50 rounded-xl flex justify-between font-bold text-xs">
+          <span>Total PKR (Pay in cash):</span>
+          <span id="modal-price" class="text-sky-700">PKR 2,500</span>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold shadow-md">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 text-xs hidden items-center gap-2">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-text">Action completed successfully</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-base font-black text-white">ServiceHub</span>
+        <span>• Pakistan’s Trusted Local Marketplace</span>
+      </div>
+      <div>© 2026 ServiceHub Pakistan. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Mock Data & Controller Script -->
+  <script>
+    const MOCK_CATEGORIES = [
+      { id: 'c1', name: 'Plumbing', icon: 'wrench', desc: 'Pipe leakages, sanitary fitting & pump installation', count: 48, price: 1500 },
+      { id: 'c2', name: 'Electrical', icon: 'zap', desc: 'UPS inverters, house wiring & breaker repair', count: 52, price: 1200 },
+      { id: 'c3', name: 'AC Repair', icon: 'snowflake', desc: 'Chemical jet wash, gas refill & PCB diagnosis', count: 58, price: 2000 },
+      { id: 'c4', name: 'Cleaning', icon: 'sparkles', desc: 'Deep home cleaning, sofa & carpet shampoo', count: 65, price: 2500 },
+      { id: 'c5', name: 'Carpentry', icon: 'hammer', desc: 'Kitchen cabinets, door locks & furniture repair', count: 38, price: 1800 },
+      { id: 'c6', name: 'Painting', icon: 'paintbrush', desc: 'Wall putty, weather-sheet & texture stucco', count: 34, price: 3500 },
+      { id: 'c7', name: 'Graphic Design', icon: 'palette', desc: 'Logo, branding, packaging & social media kits', count: 42, price: 3000 },
+      { id: 'c8', name: 'Web Development', icon: 'code', desc: 'Next.js websites, e-commerce & speed fix', count: 49, price: 8000 },
+      { id: 'c9', name: 'Photography', icon: 'camera', desc: 'Wedding portraits, events & commercial shoots', count: 29, price: 6000 },
+      { id: 'c10', name: 'Tutoring', icon: 'book-open', desc: 'O/A Level, Matric & FSc home tutors', count: 61, price: 4000 },
+      { id: 'c11', name: 'Appliance Repair', icon: 'tv', desc: 'Washing machines, microwave & refrigerators', count: 37, price: 1500 },
+      { id: 'c12', name: 'Gardening', icon: 'trees', desc: 'Lawn mowing, flower beds & drip irrigation', count: 24, price: 2000 }
+    ];
+
+    const MOCK_PROS = [
+      {
+        id: 'p1',
+        name: 'Ahmed Khan',
+        profession: 'Master Plumber & Sanitary Expert',
+        category: 'Plumbing',
+        city: 'Lahore',
+        rating: 4.9,
+        reviews: 142,
+        exp: 8,
+        price: 2000,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+        services: ['Concealed Leakage Repair', 'Bathroom Sanitary Fitting', 'Water Tank Cleaning']
+      },
+      {
+        id: 'p2',
+        name: 'Ali Raza',
+        profession: 'Licensed Electrician & Solar Tech',
+        category: 'Electrical',
+        city: 'Islamabad',
+        rating: 4.8,
+        reviews: 118,
+        exp: 6,
+        price: 1500,
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+        services: ['UPS Inverter Setup', 'DB Box Balancing', 'Short Circuit Check']
+      },
+      {
+        id: 'p3',
+        name: 'Sara Ahmed',
+        profession: 'Creative Graphic Designer',
+        category: 'Graphic Design',
+        city: 'Lahore',
+        rating: 4.9,
+        reviews: 94,
+        exp: 5,
+        price: 3000,
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+        services: ['Brand Identity Pack', 'Social Media Kit', 'Packaging Box Design']
+      },
+      {
+        id: 'p4',
+        name: 'Muhammad Usman',
+        profession: 'Inverter AC Specialist',
+        category: 'AC Repair',
+        city: 'Karachi',
+        rating: 4.9,
+        reviews: 165,
+        exp: 9,
+        price: 2000,
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+        services: ['Jet Chemical Wash', 'Gas Refill R410A', 'PCB Board Repair']
+      },
+      {
+        id: 'p5',
+        name: 'Bilal Tariq',
+        profession: 'Full-Stack Web Developer',
+        category: 'Web Development',
+        city: 'Rawalpindi',
+        rating: 5.0,
+        reviews: 76,
+        exp: 7,
+        price: 8000,
+        avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
+        services: ['Next.js E-Commerce Store', 'Business Website', 'Speed Optimization']
+      },
+      {
+        id: 'p6',
+        name: 'Fatima Noor',
+        profession: 'Deep Home Cleaning Specialist',
+        category: 'Cleaning',
+        city: 'Lahore',
+        rating: 4.8,
+        reviews: 132,
+        exp: 6,
+        price: 2500,
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+        services: ['Sofa Shampoo Machine Wash', '1-Kanal Deep Clean', 'Kitchen Degrease']
+      }
+    ];
+
+    const MOCK_TESTIMONIALS = [
+      { name: 'Khurram Shehzad', city: 'Lahore', text: 'Finding a reliable plumber in DHA Lahore was nearly impossible until I used ServiceHub. Booked Ahmed Khan within 2 minutes!' },
+      { name: 'Amina Farooq', city: 'Islamabad', text: 'Transparent PKR rates with verified credentials. We hired electricians and painters for our clients with total confidence.' },
+      { name: 'Dr. Asad Qureshi', city: 'Karachi', text: 'The jet chemical AC service in Clifton was exceptional. Transparent pricing and arrived on time.' },
+      { name: 'Saad Ur Rehman', city: 'Rawalpindi', text: 'From branding design to custom web development, connected us with Pakistan’s top freelancers.' }
+    ];
+
+    let myBookings = [
+      { id: 'b1', code: 'SH-84920', pro: 'Ahmed Khan', service: 'Concealed Pipe Leakage Detection', date: '02 Oct 2026', time: '11:00 AM', price: 2500, status: 'Confirmed' },
+      { id: 'b2', code: 'SH-84921', pro: 'Ali Raza', service: 'Distribution Box (DB) Overhaul', date: '03 Oct 2026', time: '02:00 PM', price: 3000, status: 'Pending' },
+      { id: 'b3', code: 'SH-84922', pro: 'Muhammad Usman', service: 'Full Chemical Jet Pump AC Service', date: '28 Sep 2026', time: '10:00 AM', price: 2500, status: 'Completed' }
+    ];
+
+    let providerRequests = [
+      { id: 'req1', name: 'Zubair Tariq', service: 'Water Tank Installation', date: '04 Oct 2026', time: '11:00 AM', city: 'Lahore', price: 5000 },
+      { id: 'req2', name: 'Farhan Qureshi', service: 'Bathroom Sanitary Fitting', date: '05 Oct 2026', time: '03:00 PM', city: 'Lahore', price: 4500 }
+    ];
+
+    let savedCount = 3;
+
+    function init() {
+      renderPopularServices();
+      renderFeaturedPros();
+      renderAllServices();
+      renderProsDirectory();
+      renderCustomerBookings();
+      renderProviderRequests();
+      renderTestimonials();
+      lucide.createIcons();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById('tab-' + tabId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.className = 'nav-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all';
+      });
+
+      const navBtn = document.getElementById('nav-' + tabId);
+      if (navBtn) {
+        navBtn.className = 'nav-btn px-3.5 py-2 rounded-xl text-xs font-bold text-sky-600 bg-sky-50 transition-all';
+      }
+
+      setTimeout(() => lucide.createIcons(), 50);
+    }
+
+    function renderPopularServices() {
+      const container = document.getElementById('popular-services-grid');
+      container.innerHTML = MOCK_CATEGORIES.slice(0, 8).map(c => `
+        <div onclick="switchTab('services')" class="bg-white rounded-3xl p-6 border border-slate-200 hover:shadow-xl transition-all cursor-pointer group">
+          <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4 group-hover:bg-sky-600 group-hover:text-white transition-colors">
+            <i data-lucide="${c.icon}" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-base text-slate-900 group-hover:text-sky-600 transition-colors">${c.name}</h3>
+          <p class="text-xs text-slate-500 mt-1 line-clamp-2">${c.desc}</p>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-400 font-semibold">${c.count} Experts</span>
+            <span class="font-bold text-slate-900">From PKR ${c.price.toLocaleString()}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderFeaturedPros() {
+      const container = document.getElementById('featured-pros-grid');
+      container.innerHTML = MOCK_PROS.map(p => `
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 hover:shadow-xl transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-start gap-4 mb-4">
+              <img src="${p.avatar}" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-slate-100">
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 uppercase">${p.category}</span>
+                <h4 class="font-bold text-slate-900 text-base mt-1 truncate">${p.name}</h4>
+                <p class="text-xs text-slate-500 truncate">${p.profession}</p>
+                <div class="text-xs font-bold text-amber-500 mt-1">${p.rating} ★ (${p.reviews} reviews)</div>
+              </div>
+            </div>
+            <div class="text-xs text-slate-500 space-y-1 mb-4">
+              <div>📍 ${p.city} • 💼 ${p.exp}+ years exp</div>
+            </div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] text-slate-400 block">Starting</span>
+              <span class="font-bold text-sm text-slate-900">PKR ${p.price.toLocaleString()}</span>
+            </div>
+            <button onclick="openBooking('${p.id}')" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow-xs">Book Now</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAllServices() {
+      const container = document.getElementById('all-services-grid');
+      container.innerHTML = MOCK_CATEGORIES.map(c => `
+        <div onclick="switchTab('professionals')" class="bg-white rounded-3xl p-6 border border-slate-200 hover:shadow-lg transition-all cursor-pointer">
+          <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4">
+            <i data-lucide="${c.icon}" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-base text-slate-900">${c.name}</h3>
+          <p class="text-xs text-slate-500 mt-1">${c.desc}</p>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs font-semibold">
+            <span class="text-slate-500">${c.count} Providers</span>
+            <span class="text-slate-900 font-bold">PKR ${c.price.toLocaleString()}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderProsDirectory() {
+      const cityFilter = document.getElementById('filter-pro-city').value;
+      const catFilter = document.getElementById('filter-pro-cat').value;
+
+      const filtered = MOCK_PROS.filter(p => {
+        const matchCity = !cityFilter || p.city === cityFilter;
+        const matchCat = !catFilter || p.category === catFilter;
+        return matchCity && matchCat;
+      });
+
+      const container = document.getElementById('directory-pros-grid');
+      container.innerHTML = filtered.map(p => `
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 hover:shadow-xl transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-start gap-4 mb-4">
+              <img src="${p.avatar}" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-slate-100">
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 uppercase">${p.category}</span>
+                <h4 class="font-bold text-slate-900 text-base mt-1 truncate">${p.name}</h4>
+                <p class="text-xs text-slate-500 truncate">${p.profession}</p>
+                <div class="text-xs font-bold text-amber-500 mt-1">${p.rating} ★ (${p.reviews})</div>
+              </div>
+            </div>
+            <div class="text-xs text-slate-600 mb-4">
+              📍 ${p.city} • 💼 ${p.exp}+ years experience
+            </div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="font-bold text-slate-900 text-sm">PKR ${p.price.toLocaleString()}</span>
+            <button onclick="openBooking('${p.id}')" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow-xs">Book Now</button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderCustomerBookings() {
+      const container = document.getElementById('customer-bookings-list');
+      container.innerHTML = myBookings.map(b => `
+        <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+          <div>
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-slate-900 text-sm">${b.pro}</h4>
+              <span class="font-mono text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded">${b.code}</span>
+            </div>
+            <p class="text-slate-600 mt-0.5">${b.service}</p>
+            <span class="text-[11px] text-slate-400">📅 ${b.date} at ${b.time}</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="font-bold text-slate-900 text-sm">PKR ${b.price.toLocaleString()}</span>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${
+              b.status === 'Confirmed' ? 'bg-emerald-50 text-emerald-700' :
+              b.status === 'Completed' ? 'bg-sky-50 text-sky-700' : 'bg-amber-50 text-amber-700'
+            }">${b.status}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderProviderRequests() {
+      const container = document.getElementById('provider-requests-list');
+      if (providerRequests.length === 0) {
+        container.innerHTML = '<div class="p-6 text-center text-xs text-slate-400">No pending booking requests.</div>';
+        return;
+      }
+      container.innerHTML = providerRequests.map(r => `
+        <div id="req-card-${r.id}" class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div>
+            <h4 class="font-bold text-slate-900 text-sm">${r.name}</h4>
+            <p class="text-slate-700">${r.service} • 📍 ${r.city}</p>
+            <span class="text-[11px] text-slate-500">📅 ${r.date} at ${r.time}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-bold text-slate-900">PKR ${r.price.toLocaleString()}</span>
+            <button onclick="acceptRequest('${r.id}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg font-bold">Accept</button>
+            <button onclick="declineRequest('${r.id}')" class="px-3 py-1.5 bg-white text-rose-600 border border-rose-200 rounded-lg font-bold">Decline</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderTestimonials() {
+      const container = document.getElementById('testimonials-grid');
+      container.innerHTML = MOCK_TESTIMONIALS.map(t => `
+        <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
+          <div class="text-amber-400">★★★★★</div>
+          <p class="text-xs text-slate-600 italic leading-relaxed">"${t.text}"</p>
+          <div class="pt-2 border-t border-slate-200">
+            <h5 class="font-bold text-xs text-slate-900">${t.name}</h5>
+            <span class="text-[11px] text-slate-400">${t.city}, Pakistan</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openBooking(proId) {
+      const pro = MOCK_PROS.find(p => p.id === proId) || MOCK_PROS[0];
+      document.getElementById('modal-prov-avatar').src = pro.avatar;
+      document.getElementById('modal-prov-name').innerText = pro.name;
+      document.getElementById('modal-prov-prof').innerText = pro.profession;
+      document.getElementById('modal-price').innerText = 'PKR ' + pro.price.toLocaleString();
+
+      const select = document.getElementById('modal-service-select');
+      select.innerHTML = pro.services.map(s => `<option value="${s}">${s}</option>`).join('');
+
+      const modal = document.getElementById('booking-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeBookingModal() {
+      const modal = document.getElementById('booking-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function submitBooking(e) {
+      e.preventDefault();
+      closeBookingModal();
+      showToast('Booking Request Submitted! Provider will call you shortly.');
+      myBookings.unshift({
+        id: 'b-' + Date.now(),
+        code: 'SH-' + Math.floor(10000 + Math.random() * 90000),
+        pro: document.getElementById('modal-prov-name').innerText,
+        service: document.getElementById('modal-service-select').value,
+        date: '05 Oct 2026',
+        time: '12:00 PM',
+        price: 2500,
+        status: 'Pending'
+      });
+      renderCustomerBookings();
+    }
+
+    function acceptRequest(reqId) {
+      providerRequests = providerRequests.filter(r => r.id !== reqId);
+      document.getElementById('prov-pending-count').innerText = providerRequests.length;
+      renderProviderRequests();
+      showToast('Appointment accepted! Added to confirmed schedule.');
+    }
+
+    function declineRequest(reqId) {
+      providerRequests = providerRequests.filter(r => r.id !== reqId);
+      document.getElementById('prov-pending-count').innerText = providerRequests.length;
+      renderProviderRequests();
+      showToast('Request declined.');
+    }
+
+    function handleHeroSearch() {
+      const q = document.getElementById('hero-search').value.toLowerCase();
+      const city = document.getElementById('hero-city').value;
+      if (city) document.getElementById('filter-pro-city').value = city;
+      switchTab('professionals');
+      renderProsDirectory();
+    }
+
+    function filterByService(cat) {
+      document.getElementById('filter-pro-cat').value = cat;
+      switchTab('professionals');
+      renderProsDirectory();
+    }
+
+    function handleProviderSignup(e) {
+      e.preventDefault();
+      showToast('Application received! Welcome to ServiceHub.');
+      switchTab('provider-dash');
+    }
+
+    function handleContact(e) {
+      e.preventDefault();
+      showToast('Message sent! Support will email you shortly.');
+      e.target.reset();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').innerText = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 4000);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
